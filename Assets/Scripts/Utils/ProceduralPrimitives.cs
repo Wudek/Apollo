@@ -14,8 +14,8 @@ public static class ProceduralPrimitives {
         var filter = go.AddComponent<MeshFilter>();
         Mesh mesh = filter.mesh;
         mesh.Clear();
-        float length = 1f;
-        float width = 1f;
+        float length = 1;
+        float width = 1;
         int resX = 2; // 2 minimum
         int resZ = 2;
 

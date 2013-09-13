@@ -43,7 +43,8 @@ public class TileMapCameraWatcher : MonoBehaviour {
         //TODO: this is taking way too long
         for (var i = minX; i < maxX; i++) {
             for (var j = minZ; j < maxZ; j++) {
-                TileMap.getTile(i, j);
+                if(TileMap.AreValidCoordinates(i,j))
+                    TileMap.GetTile(i, j);
             }
         }
     }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 #endregion
 
-public class Game : GameBehaviour
+public class Game : MonoBehaviour
 {
     private MainScreen _mainScreen;
 

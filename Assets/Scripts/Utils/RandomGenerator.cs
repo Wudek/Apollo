@@ -20,4 +20,10 @@ public static class RandomGenerator {
         return  (uint) (random.NextDouble() * max);
     }
 
+    public static byte NextByte(this Random random) {
+        Byte[] filler = new byte[1];
+        random.NextBytes(filler);
+        return filler[0];
+    }
+
 }

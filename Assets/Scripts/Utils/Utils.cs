@@ -4,6 +4,12 @@ using UnityEngine;
 
 static class Utils
 {
+    public static Color32 RandomColor32()
+    {
+        var rng = RandomGenerator.Rng;
+        return new Color32(rng.NextByte(), rng.NextByte(), rng.NextByte(), rng.NextByte());
+    }
+
     public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
     {
         if (val.CompareTo(min) < 0) return min;

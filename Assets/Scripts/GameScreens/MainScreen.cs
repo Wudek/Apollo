@@ -9,7 +9,8 @@ public class MainScreen : MonoBehaviour {
 //        var tileFactory = this.AddComponent<TileFactory>();
 //        tileFactory.CreateGameObjects(_tileMap);
 //        Camera.main.gameObject.AddComponent<TileMapCameraWatcher>().TileMap = _tileMap;
-        CreatePlane("CustomPlane", 250);
+//        CreatePlane("CustomPlane", 250);
+        CreatePlane("CustomPlane", 1);
     }
 
     private void CreatePlane(string name, int size) {
@@ -24,6 +25,7 @@ public class MainScreen : MonoBehaviour {
 
         #region Vertices
 
+        var colors = new Color32[count];
         var vertices = new Vector3[count];
         for (int z = 0; z < resolution; z++) {
             // [ -length / 2, length / 2 ]
@@ -32,16 +34,17 @@ public class MainScreen : MonoBehaviour {
                 // [ -width / 2, width / 2 ]
                 float xPos = ((float)x / (resolution - 1) - .5f) * size;
                 vertices[x + z * resolution] = new Vector3(xPos, 0f, zPos);
+                colors[x + z * resolution] = Utils.RandomColor32();
             }
         }
 
         #endregion
 
-        #region Normales
+        #region Normals
 
-        var normales = new Vector3[vertices.Length];
-        for (int n = 0; n < normales.Length; n++)
-            normales[n] = Vector3.up;
+        var normals = new Vector3[vertices.Length];
+        for (int n = 0; n < normals.Length; n++)
+            normals[n] = Vector3.up;
 
         #endregion
 
@@ -74,12 +77,15 @@ public class MainScreen : MonoBehaviour {
         #endregion
 
         mesh.vertices = vertices;
-        mesh.normals = normales;
+        mesh.normals = normals;
         mesh.uv = uvs;
         mesh.triangles = triangles;
+        mesh.colors32 = colors;
         mesh.RecalculateBounds();
         mesh.Optimize();
         var mr = go.AddComponent<MeshRenderer>();
-        mr.material = new Material(Shader.Find("Diffuse"));
+        //mr.material = new Material(Shader.Find("Diffuse"));
+        mr.material = Resources.Load("VertexColorUnlit") as Material;
+
     }
 }

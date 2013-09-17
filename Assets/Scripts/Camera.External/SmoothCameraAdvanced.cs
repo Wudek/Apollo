@@ -45,12 +45,12 @@ class SmoothCameraAdvanced : MonoBehaviour
     {
         set
         {
-            // Remove Prior Target
+            // Remove Prior TargetTransform
             Bumper.Ignores.Remove(Instance.target);
 
             Instance.target = value;
 
-            // Add New Target
+            // Add New TargetTransform
             Bumper.Ignores.Add(Instance.target);
         }
         get { return Instance.target; }

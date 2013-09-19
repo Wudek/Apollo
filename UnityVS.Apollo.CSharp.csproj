@@ -7,16 +7,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6550DA74-4965-E034-F9E2-98CD96818144}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,9 +58,11 @@
     <Compile Include="Assets\Scripts\Collections\GenerateOption.cs" />
     <Compile Include="Assets\Scripts\Collections\IMetaCollection.cs" />
     <Compile Include="Assets\Scripts\Collections\Permutations.cs" />
+    <Compile Include="Assets\Scripts\Collections\RotatingEnumerator.cs" />
     <Compile Include="Assets\Scripts\Collections\SmallPrimeUtility.cs" />
     <Compile Include="Assets\Scripts\Collections\Variations.cs" />
     <Compile Include="Assets\Scripts\Extensions\ArrayExtensions.cs" />
+    <Compile Include="Assets\Scripts\Extensions\ColorExtensions.cs" />
     <Compile Include="Assets\Scripts\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Assets\Scripts\Extensions\FloatExtensions.cs" />
     <Compile Include="Assets\Scripts\Extensions\GameObjectExtensions.cs" />
@@ -86,7 +86,7 @@
     <Compile Include="Assets\Scripts\Utils\RandomGenerator.cs" />
     <Compile Include="Assets\Scripts\Utils\RomanNumerals.cs" />
     <Compile Include="Assets\Scripts\Utils\Utils.cs" />
-    <None Include="Assets\Resources\VertexColorUnlit.shader" />
+    <None Include="Assets\Resources\VertexColorUnlitShader.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

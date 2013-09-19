@@ -48,9 +48,11 @@ public class CameraTileObserver : MonoBehaviour
     private float _usedDistance;
     private float _yVelocity;
     private float _zVelocity;
+    private Vector3 _targetOffset;
 
     private void Start()
     {
+        _targetOffset = new Vector3(0.5f, 0f, 0.5f);
         _lookAtOffset = new Vector3(0, LookAtHeight, 0);
     }
 
@@ -61,6 +63,19 @@ public class CameraTileObserver : MonoBehaviour
         {
             Distance -= scrollValue;
             Height -= scrollValue;
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            _targetOffset = new Vector3(_targetOffset.x - 1, _targetOffset.y, _targetOffset.z);
+        } if (Input.GetKeyDown(KeyCode.D))
+        {
+            _targetOffset = new Vector3(_targetOffset.x + 1, _targetOffset.y, _targetOffset.z);
+        } if (Input.GetKeyDown(KeyCode.S))
+        {
+            _targetOffset = new Vector3(_targetOffset.x, _targetOffset.y, _targetOffset.z - 1);
+        } if (Input.GetKeyDown(KeyCode.W))
+        {
+            _targetOffset = new Vector3(_targetOffset.x, _targetOffset.y, _targetOffset.z + 1);
         }
     }
 
@@ -77,7 +92,7 @@ public class CameraTileObserver : MonoBehaviour
 
         currentHeight = Mathf.Lerp(currentHeight, goalHeight, HeightDamping*Time.deltaTime);
 
-        var wantedPosition = TargetTransform.position;
+        var wantedPosition = TargetTransform.position + _targetOffset;
         wantedPosition.y = currentHeight;
 
         _usedDistance = Mathf.SmoothDampAngle(_usedDistance, Distance, ref _zVelocity, DistanceSnapTime);
@@ -86,6 +101,6 @@ public class CameraTileObserver : MonoBehaviour
 
         transform.position = wantedPosition;
 
-        transform.LookAt(TargetTransform.position + _lookAtOffset);
+        transform.LookAt(TargetTransform.position + _lookAtOffset + _targetOffset);
     }
 }

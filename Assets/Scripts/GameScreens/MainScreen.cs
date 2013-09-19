@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Assets.Scripts.Collections;
 using UnityEngine;
 
 public class MainScreen : MonoBehaviour
@@ -12,9 +15,88 @@ public class MainScreen : MonoBehaviour
 //        tileFactory.CreateGameObjects(_tileMap);
 //        Camera.main.gameObject.AddComponent<TileMapCameraWatcher>().TileMap = _tileMap;
 //        CreatePlane("CustomPlane", 250);
-        var plane = CreatePlane("CustomPlane", 1);
+        //var plane = CreatePlane("CustomPlane", 100);
+        var plane = CreateAlternatePlane("CustomAlternatePlane", 100, 100);
         var tileObserver = Camera.main.gameObject.AddComponent<CameraTileObserver>();
         tileObserver.TargetTransform = plane.transform;
+    }
+
+    private GameObject CreateAlternatePlane(string goName, int width, int height)
+    {
+        var go = new GameObject(goName);
+        var meshFilter = go.AddComponent<MeshFilter>();
+        var mesh = meshFilter.mesh;
+        mesh.Clear();
+
+        var totalCount = width*height*4;
+        if (totalCount > 65000)
+            throw new Exception("Cannot create a plane mesh with 65000+ vertices. Reduce size.");
+
+        #region Colors
+        var predefinedColors = new List<Color32>
+        {
+            Color.blue.ToColor32(),
+            Color.red.ToColor32(),
+            Color.green.ToColor32()
+        };
+        var colorEnumerator = new RotatingEnumerator<Color32>(predefinedColors);
+        #endregion
+
+        var vertices = new List<Vector3>();
+        var normals = new List<Vector3>();
+        var colors = new List<Color32>();
+        var uvs = new List<Vector2>();
+        var triangles = new List<int>();
+        for (var i = 0; i < width; i ++)
+        {
+            for (var j = 0; j < height; j++)
+            {
+                var baseIndex = vertices.Count;
+                //4 Vertices
+                vertices.Add(new Vector3(i, 0, j));
+                vertices.Add(new Vector3(i, 0, j + 1));
+                vertices.Add(new Vector3(i + 1, 0, j));
+                vertices.Add(new Vector3(i + 1, 0, j + 1));
+                //4 Normals
+                normals.Add(Vector3.up);
+                normals.Add(Vector3.up);
+                normals.Add(Vector3.up);
+                normals.Add(Vector3.up);
+                //2 Triangles of 3 vertices
+                //Triangle 1
+                triangles.Add(baseIndex);
+                triangles.Add(baseIndex + 1);
+                triangles.Add(baseIndex + 3);
+                //Triangle 2
+                triangles.Add(baseIndex + 3);
+                triangles.Add(baseIndex + 2);
+                triangles.Add(baseIndex);
+                //Copy the color 4 times since each vertex needs it
+                var nextColor = colorEnumerator.Next();
+                colors.Add(nextColor);
+                colors.Add(nextColor);
+                colors.Add(nextColor);
+                colors.Add(nextColor);
+                //UV should be (0,0) for bottom left, (1,1) for top right, etc.
+                uvs.Add(new Vector2(0, 0));
+                uvs.Add(new Vector2(0, 1));
+                uvs.Add(new Vector2(1, 0));
+                uvs.Add(new Vector2(1, 1));
+            }
+        }
+
+        mesh.vertices = vertices.ToArray();
+        mesh.normals = normals.ToArray();
+        mesh.uv = uvs.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.colors32 = colors.ToArray();
+        mesh.RecalculateBounds();
+        mesh.Optimize();
+        var mr = go.AddComponent<MeshRenderer>();
+        //mr.material = new Material(Shader.Find("Diffuse"));
+        mr.material = Resources.Load("VertexColorUnlitMaterial") as Material;
+
+        return go;
     }
 
     private GameObject CreatePlane(string goName, int size)
@@ -41,7 +123,7 @@ public class MainScreen : MonoBehaviour
                 // [ -width / 2, width / 2 ]
                 var xPos = ((float) x/(resolution - 1) - .5f)*size;
                 vertices[x + z*resolution] = new Vector3(xPos, 0f, zPos);
-                colors[x + z*resolution] = Utils.RandomColor32();
+                
             }
         }
 
@@ -68,11 +150,21 @@ public class MainScreen : MonoBehaviour
 
         #region Triangles
 
+        var predefinedColors = new List<Color32>
+        {
+            Color.blue.ToColor32(),
+            Color.red.ToColor32(),
+            Color.green.ToColor32()
+        };
+        var enumerator = new RotatingEnumerator<Color32>(predefinedColors);
+
+
         var nbFaces = (resolution - 1)*(resolution - 1);
         var triangles = new int[nbFaces*6];
         var t = 0;
         for (var face = 0; face < nbFaces; face++)
         {
+
             // Retrieve lower left corner from face ind
             var i = face%(resolution - 1) + (face/(resolution - 1)*resolution);
             triangles[t++] = i + resolution;
@@ -81,6 +173,8 @@ public class MainScreen : MonoBehaviour
             triangles[t++] = i + resolution;
             triangles[t++] = i + resolution + 1;
             triangles[t++] = i + 1;
+
+            colors[i] = colors[i + 1] = colors[i + resolution] = colors[i + resolution] = colors[i + resolution + 1] = enumerator.Next();
         }
 
         #endregion
@@ -94,7 +188,7 @@ public class MainScreen : MonoBehaviour
         mesh.Optimize();
         var mr = go.AddComponent<MeshRenderer>();
         //mr.material = new Material(Shader.Find("Diffuse"));
-        mr.material = Resources.Load("VertexColorUnlit") as Material;
+        mr.material = Resources.Load("VertexColorUnlitMaterial") as Material;
 
         return go;
     }

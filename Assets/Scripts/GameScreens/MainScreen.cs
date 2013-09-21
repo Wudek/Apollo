@@ -78,10 +78,14 @@ public class MainScreen : MonoBehaviour
                 colors.Add(nextColor);
                 colors.Add(nextColor);
                 //UV should be (0,0) for bottom left, (1,1) for top right, etc.
-                uvs.Add(new Vector2(0, 0));
-                uvs.Add(new Vector2(0, 1));
-                uvs.Add(new Vector2(1, 0));
-                uvs.Add(new Vector2(1, 1));
+                const float textureCount = 4f;
+                var u = ((i + j * width) % textureCount)/textureCount;
+                //Hardcode to 4th texture for now
+                u = 0.75f;
+                uvs.Add(new Vector2(u, 0));
+                uvs.Add(new Vector2(u, 1));
+                uvs.Add(new Vector2(u + 1/textureCount, 0));
+                uvs.Add(new Vector2(u + 1/textureCount, 1));
             }
         }
 
@@ -94,7 +98,7 @@ public class MainScreen : MonoBehaviour
         mesh.Optimize();
         var mr = go.AddComponent<MeshRenderer>();
         //mr.material = new Material(Shader.Find("Diffuse"));
-        mr.material = Resources.Load("VertexColorUnlitMaterial") as Material;
+        mr.material = Resources.Load("TerrainMaterial") as Material;
 
         return go;
     }
